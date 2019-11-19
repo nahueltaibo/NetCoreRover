@@ -1,7 +1,9 @@
 ﻿using Iot.Device.DCMotor;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Rover.Core.Hardware;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,52 +14,21 @@ namespace Rover.Core
     /// </summary>
     public class Rover : IHostedService
     {
+        // Limits how often we run the main loop 100 millis means it will be ran 10 times per second 
+        private const long _minLoopMillis = 100;
         private readonly ILogger<Rover> _log;
         private readonly IRoverStateManager _roverStateManager;
         private CancellationTokenSource cancellationTokenSource;
 
-        private readonly Iot.Device.MotorHat.MotorHat motorHat;
-        private readonly DCMotor leftMotor;
-        private readonly DCMotor rightMotor;
+        Stopwatch stopWatch = new Stopwatch();
 
         public Rover(ILogger<Rover> logger, IRoverStateManager roverStateManager)
         {
             _log = logger;
             _roverStateManager = roverStateManager;
-
-            try
-            {
-                //_log.LogDebug("Creating MotorHat...");
-                //// Create the MotorHat (provides access to DCMotors/StepperMotors/servoMotors/PWM channels)
-                //motorHat = new Iot.Device.MotorHat.MotorHat();
-
-                //// Create the left and right motors
-                //_log.LogDebug("Creating Motors...");
-                //leftMotor = motorHat.CreateDCMotor(1);
-                //rightMotor = motorHat.CreateDCMotor(3);
-
-                //// In case the process closed unexpectedly, stop both motors
-                //_log.LogDebug("Stopping Motors...");
-                //leftMotor.Speed = rightMotor.Speed = 0;
-            }
-            catch (Exception ex)
-            {
-                _log.LogError(ex, ex.Message);
-
-                try
-                {
-                    _log.LogDebug("Trying to stop the motors..");
-                    leftMotor.Speed = rightMotor.Speed = 0;
-                }
-                catch (Exception motorsEx)
-                {
-                    _log.LogError(motorsEx, "Unable to stop the motors");
-                    throw;
-                }
-
-                throw;
-            }
         }
+
+        public static long MinLoopMillis => _minLoopMillis;
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -79,62 +50,39 @@ namespace Rover.Core
         {
             try
             {
+                stopWatch.Start();
                 while (!token.IsCancellationRequested)
                 {
-                    _roverStateManager.Update();
+                    try
+                    {
+                        var elapsed = stopWatch.ElapsedMilliseconds;
+                        if (elapsed < _minLoopMillis)
+                        {
+                            Thread.Sleep((int)(_minLoopMillis - elapsed));
+                        }
+                        else
+                        {
+                            // Restart the stopwatch before running anything else, so we dont depend on
+                            // how long code takes to run
+                            stopWatch.Restart();
+
+                            _roverStateManager.Update();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogError(ex, ex.Message);
+                    }
                 }
             }
             catch (Exception ex)
             {
-
+                _log.LogError(ex, ex.Message);
             }
             finally
             {
-
+                stopWatch.Stop();
             }
-
-            //try
-            //{
-            //    const double Period = 10.0;
-            //    Stopwatch sw = Stopwatch.StartNew();
-            //    string lastSpeedDisp = null;
-
-            //    while (!token.IsCancellationRequested)
-            //    {
-            //        double time = sw.ElapsedMilliseconds / 1000.0;
-
-            //        // Note: range is from -1 .. 1 (for 1 pin setup 0 .. 1)
-            //        var speed = Math.Sin(2.0 * Math.PI * time / Period);
-            //        leftMotor.Speed = rightMotor.Speed = speed;
-
-            //        string disp = $"Speed = {speed:0.00}";
-            //        if (disp != lastSpeedDisp)
-            //        {
-            //            lastSpeedDisp = disp;
-            //            log.LogTrace(disp);
-            //        }
-
-            //        Thread.Sleep(1);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.LogError(ex, ex.Message);
-            //    throw;
-            //}
-            //finally
-            //{
-            //    try
-            //    {
-            //        log.LogDebug("Trying to stop the motors..");
-            //        leftMotor.Speed = rightMotor.Speed = 0;
-            //    }
-            //    catch (Exception motorsEx)
-            //    {
-            //        log.LogError(motorsEx, "Unable to stop the motors");
-            //        throw;
-            //    }
-            //}
         }
     }
 }
