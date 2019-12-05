@@ -4,4 +4,4 @@ The idea of this project is to create a Rover based on .net core, with a raspber
 
 We'll see how far I get..
 
-Check the Wiki for required hardware and steps on how to configure the environment to program this robot.
+Check [the Wiki](https://github.com/nahueltaibo/netcorerover/wiki) for required hardware and steps on how to configure the environment to program this robot.
