@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rover.Core;
-using Rover.Core.Hardware;
 using Rover.Core.Hardware.Motors;
 using Rover.Core.RoverStates;
 using Serilog;
