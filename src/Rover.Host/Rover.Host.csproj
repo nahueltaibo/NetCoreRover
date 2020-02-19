@@ -1,30 +1,30 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <EnableDefaultItems>false</EnableDefaultItems>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="*.cs" />
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="README.md" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.0-preview3.19553.2" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="3.0.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10260" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.2-dev-00824" />
-    <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0-preview.2.20118.7" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.2.1-dev-00142" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10265" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0-dev-00839" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0-dev-00864" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rover.Core\Rover.Core.csproj" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <DotNetCliToolReference Include="DotnetPublishSsh" Version="0.1.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
 </Project>
