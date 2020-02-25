@@ -1,15 +1,24 @@
 #!/bin/bash
 
-DOTNET_VERSION=2.2.207
-DOTNET_INSTALLER=dotnet-sdk-2.2.207-linux-arm.tar.gz
-DOTNET_INSTALLER_URL=https://download.visualstudio.microsoft.com/download/pr/fca1c415-b70c-4134-8844-ea947f410aad/901a86c12be90a67ec37cd0cc59d5070/dotnet-sdk-2.2.207-linux-arm.tar.gz
-DOTNET_LOCATION=$HOME/dotnet
-
-
 red=`tput setaf 1`
 green=`tput setaf 2`
 yellow=`tput setaf 3`
 reset=`tput sgr0`
+
+# exit when any command fails
+set -e
+# keep track of the last executed command
+trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
+# echo an error message before exiting
+#trap 'echo "${red}\"${last_command}\" command filed with exit code $?.${reset}"' EXIT
+
+#-----------------------------------------------------------------------
+# CONFIGURATION
+DOTNET_VERSION=2.2.207
+DOTNET_INSTALLER=dotnet-sdk-2.2.207-linux-arm.tar.gz
+DOTNET_INSTALLER_URL=https://download.visualstudio.microsoft.com/download/pr/fca1c415-b70c-4134-8844-ea947f410aad/901a86c12be90a67ec37cd0cc59d5070/dotnet-sdk-2.2.207-linux-arm.tar.gz
+DOTNET_LOCATION=$HOME/dotnet
+#-----------------------------------------------------------------------
 
 clear
 
@@ -84,3 +93,4 @@ fi
 echo
 echo "${yellow}Remember to enable SSH to publish!${reset}"
 
+echo "Done!"
