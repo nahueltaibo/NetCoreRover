@@ -1,16 +1,6 @@
 #!/bin/bash
 
-red=`tput setaf 1`
-green=`tput setaf 2`
-yellow=`tput setaf 3`
-reset=`tput sgr0`
-
-# exit when any command fails
-set -e
-# keep track of the last executed command
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-# echo an error message before exiting
-#trap 'echo "${red}\"${last_command}\" command filed with exit code $?.${reset}"' EXIT
+clear
 
 #-----------------------------------------------------------------------
 # CONFIGURATION
@@ -20,14 +10,18 @@ DOTNET_INSTALLER_URL=https://download.visualstudio.microsoft.com/download/pr/fca
 DOTNET_LOCATION=$HOME/dotnet
 #-----------------------------------------------------------------------
 
-clear
+source ./_utils.sh;
 
 echo "${green}**** NetCoreRover Environment Installer ****${reset}"
 
+goto mosquitto
+
+update:
 echo
 echo "${green}Updating Raspberry Pi...${reset}"
 sudo apt-get update
 
+upgrade:
 echo
 echo "${green}Upgrading Raspberry Pi...${reset}"
 sudo apt-get upgrade -y
@@ -36,6 +30,7 @@ echo
 echo "${green}Upgrading Raspberry Pi distro...${reset}"
 sudo apt-get dist-upgrade -y
 
+dotnet:
 echo
 echo "${green}Installing required dependencies...${reset}"
 sudo apt-get install curl libunwind8 gettext
@@ -88,9 +83,25 @@ if dotnet --version | grep $DOTNET_VERSION; then
 else
     echo
     echo "${red}there was an error installing dotnet version $DOTNET_VERSION${reset}"
+    goto end
+fi
+
+mosquitto:
+echo
+echo "${green}Installing mosquitto${reset}"
+sudo apt install mosquitto mosquitto-clients
+sudo systemctl enable mosquitto
+
+if sudo systemctl status mosquitto | grep 'active (running)'; then
+    echo
+    echo "${green}mosquitto is now running${reset}"
+else
+    echo
+    echo "${red}there was an error installing or starting mosquitto${reset}"
+    goto end
 fi
 
 echo
 echo "${yellow}Remember to enable SSH to publish!${reset}"
 
-echo "Done!"
+end:
