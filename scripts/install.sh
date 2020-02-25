@@ -14,8 +14,6 @@ source ./_utils.sh;
 
 echo "${green}**** NetCoreRover Environment Installer ****${reset}"
 
-goto mosquitto
-
 update:
 echo
 echo "${green}Updating Raspberry Pi...${reset}"
