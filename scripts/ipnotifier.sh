@@ -1,12 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
-#based on this article: https://www.raspberrypi.org/forums/viewtopic.php?t=79151
+cd /home/pi/scripts/
 
-ipVar=$(/sbin/ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-curl https://api.pushbullet.com/v2/pushes \
--u <paste_your_API_key_here>: \
--d device_iden="<device_ID_of_your_phone>" \
--d type="note" \
--d title="Pi IP address" \
--d body=$ipVar \
--X POST
+currentIp=$(hostname -I)
+read oldIp < ip.txt
+
+if [ $currentIp = $oldIp ]
+then
+  exit
+else
+  echo $currentIp > ip.txt
+ 
+  curl --request POST \
+    --url https://api.sendgrid.com/v3/mail/send \
+    --header "Authorization: Bearer <yout api key>" \
+    --header 'Content-Type: application/json' \
+    --data '{"personalizations": [{"to": [{"email": "<receivers email>"}]}],"from": {"email": "<any sender email>"},"subject": "Chipmunk rover started (ip: '"$currentIp"')","content": [{"type": "text/plain", "value": "Chipmunk rover is ready to go!"}]}'
+fi
+
