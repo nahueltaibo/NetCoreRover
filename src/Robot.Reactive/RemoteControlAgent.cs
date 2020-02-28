@@ -1,32 +1,47 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using MessageBus;
+using MessageBus.Messages;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Robot.MessageBus.Messages;
 
-namespace Rover.Core
+namespace Robot.Reactive
 {
-    /// <summary>
-    /// Main entry point for the Rover
-    /// </summary>
-    public class Rover : IHostedService
+    public class RemoteControlAgent : IHostedService
     {
         // Limits how often we run the main loop 100 millis means it will be ran 10 times per second 
         private const long _minLoopMillis = 100;
-        private readonly ILogger<Rover> _log;
-        private readonly IRoverStateManager _roverStateManager;
+        private readonly IMessageBroker _messageBroker;
+        private readonly ILogger<RemoteControlAgent> _log;
         private CancellationTokenSource _cancellationTokenSource;
+        double _currentTranslation = 0;
+        double _currentRotation = 0;
+
+        // We will only publish messages if there is any change (And when we start, so we stop the motors in case they are running)
+        bool _changed = true;
 
         Stopwatch stopWatch = new Stopwatch();
 
-        public Rover(ILogger<Rover> logger/*, IRoverStateManager roverStateManager*/)
+        public RemoteControlAgent(IMessageBroker messageBroker, ILogger<RemoteControlAgent> logger)
         {
+            _messageBroker = messageBroker;
             _log = logger;
-            //_roverStateManager = roverStateManager;
+
+            _messageBroker.SubscribeAsync<DirectionMessage>(OnDirectionMessageReceived);
         }
 
-        public static long MinLoopMillis => _minLoopMillis;
+        private void OnDirectionMessageReceived(DirectionMessage directionMessage)
+        {
+            if (directionMessage.X.HasValue || directionMessage.Y.HasValue)
+            {
+                _currentTranslation = directionMessage.X ?? _currentTranslation;
+                _currentRotation = directionMessage.Y ?? _currentRotation;
+                _changed = true;
+            }
+        }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -64,7 +79,18 @@ namespace Rover.Core
                             // how long code takes to run
                             stopWatch.Restart();
 
-                            //_roverStateManager.Update();
+                            // Run whatever we need...
+                            if (_changed == true)
+                            {
+                                _messageBroker.PublishAsync(new SpeedMessage
+                                {
+                                    X = _currentTranslation,
+                                    Y = _currentRotation,
+                                    Z = 0
+                                });
+
+                                _changed = false;
+                            }
                         }
                     }
                     catch (Exception ex)

@@ -32,11 +32,14 @@ namespace MessageBus
         {
             var topic = GetTopic(typeof(T));
 
-            _log.LogDebug($"Publishing topic={topic} payload={message}");
+
+            var serializedMessage = JsonConvert.SerializeObject(message);
+
+            _log.LogDebug($"Publishing topic={topic} payload={serializedMessage}");
 
             var wrapper = new MessageWrapper
             {
-                Payload = JsonConvert.SerializeObject(message),
+                Payload = serializedMessage,
                 Type = typeof(T).FullName
             };
 
@@ -81,9 +84,7 @@ namespace MessageBus
 
         private string GetTopic(Type type)
         {
-            var topicAttribute = type.GetCustomAttributes(typeof(TopicAttribute), true).FirstOrDefault() as TopicAttribute;
-
-            if (topicAttribute == null)
+            if (!(type.GetCustomAttributes(typeof(TopicAttribute), true).FirstOrDefault() is TopicAttribute topicAttribute))
             {
                 throw new ArgumentException($"TopicAttribute missing in the Message type {type.FullName}");
             }

@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageBus\MessageBus.csproj" />
+    <ProjectReference Include="..\MessageBus\Robot.MessageBus.csproj" />
+    <ProjectReference Include="..\Robot.Utils\Robot.Utils.csproj" />
   </ItemGroup>
 
 </Project>

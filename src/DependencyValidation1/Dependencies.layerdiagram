@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<layerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="6d5b1f58-a66e-4538-91a4-e8b1f351cc70" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/LayerDesigner">
+  <layers>
+    <layer Id="96cd1755-402d-4e66-b248-2d15eb991ccb" name="Behavioral Layer">
+      <childLayers>
+        <layer Id="7e1da418-59e3-4db2-9ac6-ffd165f0b0ea" name="Robot.Behaviors">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="c3769ecd-e978-4922-954a-5980958f947a" direction="Forward">
+              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+          <references>
+            <reference Id="7e650bad-be1a-401c-a904-b4f16a03d75c" name="Robot.Behaviors">
+              <ArtifactNode Label="Robot.Behaviors" Category="CodeSchema_Project" Id="(Assembly=../Robot.Behaviors/Robot.Behaviors.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Robot.Behaviors)" Label="Robot.Behaviors.dll" Category="CodeSchema_Assembly">
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="3e254ea3-c2cf-472d-8a6a-a3e0885b709a" name="Reactive Layer">
+      <childLayers>
+        <layer Id="d1fa9f68-7e53-40b9-a084-b0582c3fc95d" name="Robot.Reactive">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="2ad119b7-b986-4672-9f0a-123fdc54efca" direction="Forward">
+              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+          <references>
+            <reference Id="f3dfe5f3-2487-4b84-9fd1-7cba9c17e74d" name="Robot.Reactive">
+              <ArtifactNode Label="Robot.Reactive" Category="CodeSchema_Project" Id="(Assembly=../Robot.Reactive/Robot.Reactive.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Robot.Reactive)" Label="Robot.Reactive.dll" Category="CodeSchema_Assembly">
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="38f37589-4967-4549-99ed-90e34952fc71" name="Control Layer">
+      <childLayers>
+        <layer Id="9d847d4e-1b33-445c-9598-7a6fe69045e6" name="Robot.Drivers">
+          <references>
+            <reference Id="56a1c91e-59ed-4ccf-976b-75be8e797625" name="Robot.Drivers">
+              <ArtifactNode Label="Robot.Drivers" Category="CodeSchema_Project" Id="(Assembly=../Robot.Drivers/Robot.Drivers.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Robot.Drivers)" Label="Robot.Drivers.dll" Category="CodeSchema_Assembly">
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+        <layer Id="10446d91-ef5e-473e-b0c2-c89373731752" name="Robot.Controllers">
+          <dependencyToLayers>
+            <dependencyFromLayerToLayer Id="b93c4c9c-f8e1-4afd-9767-10dec803326a" direction="Forward">
+              <layerMoniker Id="9d847d4e-1b33-445c-9598-7a6fe69045e6" />
+            </dependencyFromLayerToLayer>
+            <dependencyFromLayerToLayer Id="aa683fc8-8ad8-4c27-84ce-748e2de454a7" direction="Forward">
+              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            </dependencyFromLayerToLayer>
+          </dependencyToLayers>
+          <references>
+            <reference Id="f25267e8-91f7-4e71-ada7-b97cf25d5cd7" name="Robot.Controllers">
+              <ArtifactNode Label="Robot.Controllers" Category="CodeSchema_Project" Id="(Assembly=../Robot.Controllers/Robot.Controllers.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Robot.Controllers)" Label="Robot.Controllers.dll" Category="CodeSchema_Assembly">
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+    <layer Id="65720137-1766-4d70-a12c-5bf5aa7c6bf4" name="Infrastructure">
+      <childLayers>
+        <layer Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" name="Robot.MessageBus">
+          <references>
+            <reference Id="c4dd43e5-19c2-40b6-8d76-b550a442a498" name="Robot.MessageBus">
+              <ArtifactNode Label="Robot.MessageBus" Category="CodeSchema_Project" Id="(Assembly=../MessageBus/Robot.MessageBus.csproj)">
+                <Category Ref="File" />
+              </ArtifactNode>
+              <ExpandedNode Id="(Assembly=Robot.MessageBus)" Label="Robot.MessageBus.dll" Category="CodeSchema_Assembly">
+                <LinkCategory Ref="Produces" />
+                <LinkCategory Ref="Represents" />
+              </ExpandedNode>
+            </reference>
+          </references>
+        </layer>
+      </childLayers>
+    </layer>
+  </layers>
+</layerModel>

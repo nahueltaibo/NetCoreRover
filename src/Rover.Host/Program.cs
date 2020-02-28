@@ -1,7 +1,7 @@
-﻿using MessageBus;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Robot.Host;
 using Rover.Core;
 using Rover.Core.Hardware.Motors;
 using Rover.Core.RoverStates;
@@ -69,19 +69,13 @@ namespace HostConsole
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddLogging();
+                    services.AddInfrastructure();
 
-                    services.AddSingleton<IMessageBroker, MesageBroker>();
-                    services.AddSingleton<MotorController>();
+                    services.AddControlLayer();
 
-                    services.AddSingleton<RoverContext>();
-                    services.AddSingleton<IRoverStateManager, RoverStateManager>();
+                    services.AddReactiveLayer();
 
-                    services.AddSingleton<IddleState>();
-                    services.AddSingleton<RemoteControledState>();
-                    services.AddSingleton<AutonomuseState>();
-
-                    services.AddHostedService<Rover.Core.Rover>();
+                    services.AddBehavioralLayer();
                 })
                 .UseSerilog();
         }
