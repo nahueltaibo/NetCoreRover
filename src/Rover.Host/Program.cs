@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MessageBus.Messages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Rover.Core;
@@ -69,6 +70,7 @@ namespace HostConsole
                 {
                     services.AddLogging();
 
+                    services.AddSingleton<IMessageBroker, IMessageBroker>();
                     services.AddSingleton<MotorController>();
 
                     services.AddSingleton<RoverContext>();

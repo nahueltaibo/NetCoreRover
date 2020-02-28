@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10269" />
     <PackageReference Include="System.Net.Mqtt" Version="0.6.0-beta" />
   </ItemGroup>
 
