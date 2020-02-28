@@ -40,12 +40,11 @@ namespace Rover.Core.Hardware.Motors
             _log.LogDebug("Stopping Motors...");
             _leftMotor.Speed = _rightMotor.Speed = 0;
 
-
+            // Subscribe to SpeedMessages
             _messageBus.SubscribeAsync<SpeedMessage>(OnSpeedReceived).Wait();
-
         }
 
-        private void OnSpeedReceived(IMessage obj)
+        private void OnSpeedReceived(SpeedMessage speedMessage)
         {
             throw new NotImplementedException();
         }

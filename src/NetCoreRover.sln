@@ -7,7 +7,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rover.Host", "Rover.Host\Ro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rover.Core", "Rover.Core\Rover.Core.csproj", "{A81F4870-0952-4512-BB3E-5B289F66157D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBus", "MessageBus\MessageBus.csproj", "{EDDA41AB-A4D3-4F36-B9B0-818309CAEED6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBus", "MessageBus\MessageBus.csproj", "{EDDA41AB-A4D3-4F36-B9B0-818309CAEED6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Control Layer", "Control Layer", "{AF43DF71-D1EC-495A-9E1F-C5BA7ACDC6B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Driver Layer", "Driver Layer", "{DD50DF82-C89F-4B0A-B9BD-0A2907A9AF07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reactive Layer", "Reactive Layer", "{53C240BD-18A9-447C-98D6-5CF351BBEEE1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Behavioral Layer", "Behavioral Layer", "{5EE7B3AF-3598-4AEC-8A16-A9743440F699}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{0978AD24-D941-41D4-A2FA-508BFA5F8BCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +40,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F26D7FF-6395-42D4-87FE-617A37D59897} = {0978AD24-D941-41D4-A2FA-508BFA5F8BCC}
+		{EDDA41AB-A4D3-4F36-B9B0-818309CAEED6} = {0978AD24-D941-41D4-A2FA-508BFA5F8BCC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80287BF-19EE-488E-807C-6B743006614C}

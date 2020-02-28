@@ -45,7 +45,7 @@ namespace MessageBus
             await _mqttClient.PublishAsync(new MqttApplicationMessage(topic, payload), MqttQualityOfService.ExactlyOnce);
         }
 
-        public async Task SubscribeAsync<T>(Action<IMessage> callback) where T : IMessage
+        public async Task SubscribeAsync<T>(Action<T> callback) where T : IMessage
         {
             var topic = GetTopic(typeof(T));
 
@@ -75,7 +75,7 @@ namespace MessageBus
 
                 var typed = (IMessage)Convert.ChangeType(deserialized, subscription.Type);
 
-                subscription.Callback(typed);
+                ((Action<IMessage>)subscription.Callback)(typed);
             }
         }
 
