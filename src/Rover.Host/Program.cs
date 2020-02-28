@@ -1,4 +1,4 @@
-﻿using MessageBus.Messages;
+﻿using MessageBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,6 +41,7 @@ namespace HostConsole
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 Console.ReadLine();
             }
@@ -70,7 +71,7 @@ namespace HostConsole
                 {
                     services.AddLogging();
 
-                    services.AddSingleton<IMessageBroker, IMessageBroker>();
+                    services.AddSingleton<IMessageBroker, MesageBroker>();
                     services.AddSingleton<MotorController>();
 
                     services.AddSingleton<RoverContext>();

@@ -6,6 +6,6 @@ namespace MessageBus
     {
         public Type Type { get; internal set; }
         public string Topic { get; internal set; }
-        public Action<IMessage> Callback { get; internal set; }
+        public object Callback { get; internal set; }
     }
 }
