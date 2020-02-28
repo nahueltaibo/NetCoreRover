@@ -1,5 +1,7 @@
 ﻿using Iot.Device.DCMotor;
 using Iot.Device.MotorHat;
+using MessageBus;
+using MessageBus.Messages;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Numerics;
@@ -11,6 +13,7 @@ namespace Rover.Core.Hardware.Motors
     /// </summary>
     public class MotorController : IMotorController, IDisposable
     {
+        private readonly IMessageBroker _messageBus;
         private readonly ILogger<MotorController> _log;
         private MotorHat _motorHat;
         private readonly DCMotor _leftMotor;
@@ -19,9 +22,10 @@ namespace Rover.Core.Hardware.Motors
         private double _translation;
         private double _rotation;
 
-        public MotorController(ILogger<MotorController> logger)
+        public MotorController(IMessageBroker messageBus, ILogger<MotorController> logger)
         {
             _log = logger;
+            _messageBus = messageBus;
 
             _log.LogDebug("Creating MotorHat...");
             // Create the MotorHat (provides access to DCMotors/StepperMotors/servoMotors/PWM channels)
@@ -35,6 +39,15 @@ namespace Rover.Core.Hardware.Motors
             // In case the process closed unexpectedly, stop both motors
             _log.LogDebug("Stopping Motors...");
             _leftMotor.Speed = _rightMotor.Speed = 0;
+
+
+            _messageBus.SubscribeAsync<SpeedMessage>(OnSpeedReceived).Wait();
+
+        }
+
+        private void OnSpeedReceived(IMessage obj)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

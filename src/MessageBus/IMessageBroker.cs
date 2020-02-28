@@ -5,8 +5,8 @@ namespace MessageBus.Messages
 {
     public interface IMessageBroker
     {
-        Task PublishAsync<T>(string topic, T message);
+        Task PublishAsync<T>(T message) where T : IMessage;
 
-        Task SubscribeAsync<T>(string topic, Action<IMessage> callback);
+        Task SubscribeAsync<T>(Action<IMessage> callback) where T : IMessage;
     }
 }
