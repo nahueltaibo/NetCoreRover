@@ -1,5 +1,6 @@
 ﻿using Gamepad;
 using Microsoft.Extensions.Logging;
+using Robot.Utils;
 using Rover.Core.Hardware;
 using Rover.Core.Hardware.Motors;
 using System;
@@ -100,34 +101,15 @@ namespace Rover.Core.RoverStates
 
         private void ProcessDirectionAxis(AxisEventArgs e)
         {
-            double mappedValue = Map(e.Value, -32767, 32767, -1, 1);
+            double mappedValue = ValueMapper.Map(e.Value, -32767, 32767, -1, 1);
             _motorController.SetSpeed(mappedValue);
         }
 
         private void ProcessSpeedAxis(AxisEventArgs e)
         {
-            double mappedValue = Map(e.Value, -32767, 32767, -1, 1) * -1; // Gamepad forward produces negative values
+            double mappedValue = ValueMapper.Map(e.Value, -32767, 32767, -1, 1) * -1; // Gamepad forward produces negative values
             _motorController.SetRotation(mappedValue);
         }
-
-        private double Map(double value, double inMin, double inMax, double outMin, double outMax)
-        {
-            // Check that the value is at least inMin
-            if (value < inMin)
-            {
-                value = inMin;
-            }
-
-            // Check that the value is at most inMax
-            if (value > inMax)
-            {
-                value = inMax;
-            }
-
-            //return (value - inMin) * (outMax - outMin);
-            return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-        }
-
 
         public void Dispose()
         {

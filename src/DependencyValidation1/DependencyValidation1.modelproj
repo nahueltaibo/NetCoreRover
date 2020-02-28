@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{debc8249-761c-4634-b940-2d306d6738c9}</ProjectGuid>
+    <ArchitectureToolsVersion>2.0.0.0</ArchitectureToolsVersion>
+    <Name>DependencyValidation1</Name>
+    <RootNamespace>DependencyValidation1</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Validate Include="Dependencies.layerdiagram">
+      <SubType>Content</SubType>
+    </Validate>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MessageBus\Robot.MessageBus.csproj">
+      <Name>Robot.MessageBus</Name>
+      <Project>{edda41ab-a4d3-4f36-b9b0-818309caeed6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot.Behaviors\Robot.Behaviors.csproj">
+      <Name>Robot.Behaviors</Name>
+      <Project>{fa9e89f7-7cf8-4b8e-ab3b-cfec71669ed8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot.Controllers\Robot.Controllers.csproj">
+      <Name>Robot.Controllers</Name>
+      <Project>{8a59bcbc-d725-4ca2-b78b-7a568a00e3f9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot.Drivers\Robot.Drivers.csproj">
+      <Name>Robot.Drivers</Name>
+      <Project>{e0543400-38e1-46a6-938c-694c1e11724d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Robot.Reactive\Robot.Reactive.csproj">
+      <Name>Robot.Reactive</Name>
+      <Project>{6ef98771-79e9-45df-abdd-4a0742fde53f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Rover.Host\Robot.Host.csproj">
+      <Name>Robot.Host</Name>
+      <Project>{6f26d7ff-6395-42d4-87fe-617a37d59897}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />
+</Project>

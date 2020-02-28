@@ -14,8 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageBus\MessageBus.csproj" />
-    <ProjectReference Include="..\Rover.Core\Rover.Core.csproj" />
+    <ProjectReference Include="..\MessageBus\Robot.MessageBus.csproj" />
+    <ProjectReference Include="..\Robot.Controllers\Robot.Controllers.csproj" />
+    <ProjectReference Include="..\Robot.Drivers\Robot.Drivers.csproj" />
+    <ProjectReference Include="..\Robot.Reactive\Robot.Reactive.csproj" />
+    <ProjectReference Include="..\Rover.Core\Robot.Core.csproj" />
   </ItemGroup>
   
   <ItemGroup>

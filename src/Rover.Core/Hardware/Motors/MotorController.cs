@@ -3,6 +3,7 @@ using Iot.Device.MotorHat;
 using MessageBus;
 using MessageBus.Messages;
 using Microsoft.Extensions.Logging;
+using Robot.Utils;
 using System;
 using System.Numerics;
 
@@ -131,29 +132,10 @@ namespace Rover.Core.Hardware.Motors
 
             // minJoystick, maxJoystick, minSpeed, maxSpeed
             // Map the values onto the defined rang
-            float rightOut = (float)Map(rawRight, minJoystick, maxJoystick, minSpeed, maxSpeed);
-            float leftOut = (float)Map(rawLeft, minJoystick, maxJoystick, minSpeed, maxSpeed);
+            float rightOut = (float)ValueMapper.Map(rawRight, minJoystick, maxJoystick, minSpeed, maxSpeed);
+            float leftOut = (float)ValueMapper.Map(rawLeft, minJoystick, maxJoystick, minSpeed, maxSpeed);
 
             return new Vector2(rightOut, leftOut);
-        }
-
-
-        private double Map(double value, double inMin, double inMax, double outMin, double outMax)
-        {
-            // Check that the value is at least inMin
-            if (value < inMin)
-            {
-                value = inMin;
-            }
-
-            // Check that the value is at most inMax
-            if (value > inMax)
-            {
-                value = inMax;
-            }
-
-            //return (value - inMin) * (outMax - outMin);
-            return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
         }
     }
 }
