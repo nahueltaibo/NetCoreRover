@@ -2,13 +2,11 @@
 
 namespace Robot.MessageBus.Messages
 {
-    [Topic("commands/direction")]
-    public class DirectionMessage : IMessage
+    [Topic("motion/velocity")]
+    public class VelocityMessage : MessageBase, IMessage
     {
         public double? X { get; set; }
-
         public double? Y { get; set; }
-
         public double? Z { get; set; }
     }
 }

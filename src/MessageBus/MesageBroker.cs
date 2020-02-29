@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mqtt;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,7 +49,7 @@ namespace MessageBus
             await _mqttClient.PublishAsync(new MqttApplicationMessage(topic, payload), MqttQualityOfService.ExactlyOnce);
         }
 
-        public async Task SubscribeAsync<T>(Action<T> callback) where T : IMessage
+        public async Task SubscribeAsync<T>(Action<IMessage> callback) where T : IMessage
         {
             var topic = GetTopic(typeof(T));
 
@@ -63,22 +64,21 @@ namespace MessageBus
             await _mqttClient.SubscribeAsync(topic, MqttQualityOfService.ExactlyOnce);
         }
 
-        private void OnMessageReceived(MqttApplicationMessage message)
+        private void OnMessageReceived(MqttApplicationMessage mqttMessage)
         {
-            _log.LogDebug($"Message received: topic={message.Topic} payload={message.Payload}");
+            var payload = Encoding.UTF8.GetString(mqttMessage.Payload);
 
-            var payload = Encoding.UTF8.GetString(message.Payload);
-            Console.WriteLine(payload);
+            _log.LogDebug($"Message received: topic= {mqttMessage.Topic} payload= {payload}");
 
-            var subscription = Subscriptions.FirstOrDefault(s => s.Topic == message.Topic);
+            var subscription = Subscriptions.FirstOrDefault(s => s.Topic == mqttMessage.Topic);
 
             if (subscription != null)
             {
-                var deserialized = JsonConvert.DeserializeObject(payload);
+                var messageWrapper = (MessageWrapper)JsonConvert.DeserializeObject(payload, typeof(MessageWrapper));
 
-                var typed = (IMessage)Convert.ChangeType(deserialized, subscription.Type);
+                var message = (IMessage)JsonConvert.DeserializeObject(messageWrapper.Payload, subscription.Type);
 
-                ((Action<IMessage>)subscription.Callback)(typed);
+                subscription.Callback(message);
             }
         }
 

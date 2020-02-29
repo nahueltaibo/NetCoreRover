@@ -1,4 +1,4 @@
-﻿namespace Robot.Drivers
+﻿namespace Robot.Drivers.Motors
 {
     public interface IMotor
     {

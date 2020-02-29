@@ -1,12 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using MessageBus;
-using MessageBus.Messages;
+﻿using MessageBus;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Robot.MessageBus.Messages;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Robot.Reactive
 {
@@ -29,31 +28,35 @@ namespace Robot.Reactive
         {
             _messageBroker = messageBroker;
             _log = logger;
-
-            _messageBroker.SubscribeAsync<DirectionMessage>(OnDirectionMessageReceived);
         }
 
-        private void OnDirectionMessageReceived(DirectionMessage directionMessage)
+        private void OnRemoteControlMessageReceived(IMessage message)
         {
-            if (directionMessage.X.HasValue || directionMessage.Y.HasValue)
+            var directionMessage = message as RemoteControlMessage;
+
+            if (directionMessage.Throttle.HasValue || directionMessage.Yaw.HasValue)
             {
-                _currentTranslation = directionMessage.X ?? _currentTranslation;
-                _currentRotation = directionMessage.Y ?? _currentRotation;
+                _currentTranslation = directionMessage.Throttle ?? _currentTranslation;
+                _currentRotation = directionMessage.Yaw ?? _currentRotation;
                 _changed = true;
             }
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            _log.LogInformation($"Starting {nameof(RemoteControlAgent)}");
+
             _cancellationTokenSource = new CancellationTokenSource();
 
             _ = Task.Factory.StartNew(() => Run(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 
-            await Task.CompletedTask;
+            await _messageBroker.SubscribeAsync<RemoteControlMessage>(OnRemoteControlMessageReceived);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
+            _log.LogInformation($"Stopping {nameof(RemoteControlAgent)}");
+
             _cancellationTokenSource.Cancel();
 
             await Task.CompletedTask;
@@ -82,7 +85,7 @@ namespace Robot.Reactive
                             // Run whatever we need...
                             if (_changed == true)
                             {
-                                _messageBroker.PublishAsync(new SpeedMessage
+                                _messageBroker.PublishAsync(new VelocityMessage
                                 {
                                     X = _currentTranslation,
                                     Y = _currentRotation,
