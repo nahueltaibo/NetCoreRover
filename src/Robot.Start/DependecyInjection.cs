@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Robot.Controllers;
 using Robot.Controllers.RemoteControl;
-using Robot.Drivers;
+using Robot.Drivers.Motors;
 using Robot.Drivers.RemoteControl;
 using Robot.Reactive;
 
@@ -37,37 +37,37 @@ namespace Robot.Host
         public static IServiceCollection AddControlLayer(this IServiceCollection services)
         {
             // Configure the Differencial Drive Controller
-            services.AddSingleton<ISpeedController, DifferentialDriveSpeedController>(s =>
+            services.AddHostedService<DifferentialDriveVelocityController>(s =>
             {
                 // Create the motor Hat, and the drivers for left and right motors
                 var motorHat = new MotorHat();
                 var leftMotorDriver = new DCMotorDriver(motorHat.CreateDCMotor(1), s.GetService<ILogger<DCMotorDriver>>());
                 var rightMotorDriver = new DCMotorDriver(motorHat.CreateDCMotor(3), s.GetService<ILogger<DCMotorDriver>>());
 
-                // Create the SpeedController that controls them
-                return new DifferentialDriveSpeedController(
+                // Create the SpeedController that controls left and right motors
+                return new DifferentialDriveVelocityController(
                      leftMotorDriver,
                      rightMotorDriver,
                      s.GetService<IMessageBroker>(),
-                     s.GetService<ILogger<DifferentialDriveSpeedController>>());
+                     s.GetService<ILogger<DifferentialDriveVelocityController>>());
             });
 
-            services.Configure<RCOptions>(options =>
+            services.Configure<RemoteControlOptions>(options =>
             {
                 options.GamepadTranslationAxisKey = 0;
                 options.GamepadRotationAxisKey = 1;
             });
 
             // Configure the Remote Control Controller
-            services.AddSingleton<IRCController, RCController>(s =>
+            services.AddHostedService<RemoteControlController>(s =>
             {
                 var gamepadDriver = new GamepadDriver(s.GetService<ILogger<GamepadDriver>>());
 
-                return new RCController(
+                return new RemoteControlController(
                     gamepadDriver,
                     s.GetService<IMessageBroker>(),
-                    s.GetService<IOptions<RCOptions>>(),
-                    s.GetService<ILogger<RCController>>());
+                    s.GetService<IOptions<RemoteControlOptions>>(),
+                    s.GetService<ILogger<RemoteControlController>>());
             });
 
             return services;

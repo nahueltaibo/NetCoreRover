@@ -1,7 +1,7 @@
 ﻿using Iot.Device.DCMotor;
 using Microsoft.Extensions.Logging;
 
-namespace Robot.Drivers
+namespace Robot.Drivers.Motors
 {
     public class DCMotorDriver : IMotor
     {

@@ -1,38 +1,52 @@
-﻿using System;
-using System.Numerics;
-using MessageBus;
-using MessageBus.Messages;
+﻿using MessageBus;
 using Microsoft.Extensions.Logging;
-using Robot.Drivers;
+using Robot.Drivers.Motors;
+using Robot.MessageBus.Messages;
 using Robot.Utils;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Robot.Controllers
 {
-    public class DifferentialDriveSpeedController : ISpeedController
+    public class DifferentialDriveVelocityController : IVelocityController
     {
         private readonly IMotor _leftMotor;
         private readonly IMotor _rightMotor;
         private readonly IMessageBroker _messageBroker;
-        private readonly ILogger<DifferentialDriveSpeedController> _log;
+        private readonly ILogger<DifferentialDriveVelocityController> _log;
         private double _translation = 0;
         private double _rotation = 0;
 
-        public DifferentialDriveSpeedController(IMotor leftMotor, IMotor rightMotor, IMessageBroker messageBroker, ILogger<DifferentialDriveSpeedController> logger)
+        public DifferentialDriveVelocityController(IMotor leftMotor, IMotor rightMotor, IMessageBroker messageBroker, ILogger<DifferentialDriveVelocityController> logger)
         {
             _leftMotor = leftMotor;
             _rightMotor = rightMotor;
             _messageBroker = messageBroker;
             _log = logger;
-
-            // Subscribe to SpeedMessages...
-            _messageBroker.SubscribeAsync<SpeedMessage>(OnSpeedMessageReceived);
         }
 
-        private void OnSpeedMessageReceived(SpeedMessage speedMessage)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
+            _log.LogInformation($"Starting {nameof(DifferentialDriveVelocityController)}");
+
+            // Subscribe to SpeedMessages...
+            await _messageBroker.SubscribeAsync<VelocityMessage>(OnVelocityMessageReceived);
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _log.LogInformation($"Stopping {nameof(DifferentialDriveVelocityController)}");
+            await Task.CompletedTask;
+        }
+
+        private void OnVelocityMessageReceived(IMessage message)
+        {
+            var velocityMessage = message as VelocityMessage;
+
             // Update the direction and rotation only if we are receiving a valid value
-            _translation = speedMessage.X ?? _translation;
-            _rotation = speedMessage.Y ?? _rotation;
+            _translation = velocityMessage.X ?? _translation;
+            _rotation = velocityMessage.Y ?? _rotation;
 
             // Convert translation and rotation to the speeds to be set to each motor
             var motorSpeeds = JoystickToDiff(_translation, _rotation, -1, 1, -1, 1);

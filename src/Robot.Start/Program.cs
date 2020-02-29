@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Robot.Host;
-using Rover.Core;
-using Rover.Core.Hardware.Motors;
-using Rover.Core.RoverStates;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;

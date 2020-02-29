@@ -7,6 +7,6 @@ namespace MessageBus
     {
         Task PublishAsync<T>(T message) where T : IMessage;
 
-        Task SubscribeAsync<T>(Action<T> callback) where T : IMessage;
+        Task SubscribeAsync<T>(Action<IMessage> callback) where T : IMessage;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Robot.Controllers.RemoteControl
 {
-    public class RCOptions
+    public class RemoteControlOptions
     {
         public int GamepadTranslationAxisKey { get; set; }
 
