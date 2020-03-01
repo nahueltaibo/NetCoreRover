@@ -16,7 +16,7 @@ namespace Robot.Drivers.Motors
 
         public void SetSpeed(double speed)
         {
-            _log.LogDebug($"Setting MotorSpeed: {speed}");
+            _log.LogDebug($"Setting MotorSpeed: {speed:0.00}");
             _dcMotor.Speed = speed;
         }
     }

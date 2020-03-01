@@ -54,8 +54,8 @@ namespace Robot.Host
 
             services.Configure<RemoteControlOptions>(options =>
             {
-                options.GamepadTranslationAxisKey = 0;
-                options.GamepadRotationAxisKey = 1;
+                options.GamepadKeyThrottle = 1;
+                options.GamepadKeyYaw = 0;
             });
 
             // Configure the Remote Control Controller

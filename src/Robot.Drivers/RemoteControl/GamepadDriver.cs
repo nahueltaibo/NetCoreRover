@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Robot.Drivers.RemoteControl
 {
-    public class GamepadDriver : IGamepadDriver, IDisposable
+    public class GamepadDriver : IGamepadDriver
     {
         private const string gamepadFile = "/dev/input/js0";
         private readonly ILogger<GamepadDriver> _log;
@@ -21,7 +21,7 @@ namespace Robot.Drivers.RemoteControl
         {
             _log = logger;
 
-            _ = Task.Factory.StartNew(() => HandleGamepadConnection(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
+            _connectionTask = Task.Factory.StartNew(() => HandleGamepadConnection(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
         }
 
         private void HandleGamepadConnection(CancellationToken token)

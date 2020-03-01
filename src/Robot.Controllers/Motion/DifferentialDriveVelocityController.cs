@@ -31,7 +31,7 @@ namespace Robot.Controllers
             _log.LogInformation($"Starting {nameof(DifferentialDriveVelocityController)}");
 
             // Subscribe to SpeedMessages...
-            await _messageBroker.SubscribeAsync<VelocityMessage>(OnVelocityMessageReceived);
+            _messageBroker.Subscribe<VelocityMessage>(OnVelocityMessageReceived);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -104,8 +104,8 @@ namespace Robot.Controllers
             // Reverse polarity
             if (y < 0)
             {
-                rawLeft = 0 - rawLeft;
-                rawRight = 0 - rawRight;
+                rawLeft = -rawLeft;
+                rawRight = -rawRight;
             }
 
             // minJoystick, maxJoystick, minSpeed, maxSpeed

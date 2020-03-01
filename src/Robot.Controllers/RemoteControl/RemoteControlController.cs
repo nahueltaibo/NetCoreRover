@@ -37,19 +37,23 @@ namespace Robot.Controllers.RemoteControl
             _log.LogInformation($"Stopping {nameof(RemoteControlController)}");
 
             _gamepadDriver.KeyChanged -= OnGamepadKeyChanged;
+
             await Task.CompletedTask;
         }
 
         private void OnGamepadKeyChanged(object sender, GamepadEventArgs e)
         {
-            if (e.Key == _options.Value.GamepadTranslationAxisKey)
+            if (e.Key == _options.Value.GamepadKeyThrottle)
             {
-                _messageBroker.PublishAsync(new RemoteControlMessage { Throttle = e.Value });
+                _log.LogDebug($"Throttle: {e.Value:0.00}");
+                // Gamepad's throttle value comes inverted.. fix that sending (-e.Value)
+                _messageBroker.Publish(new RemoteControlMessage { Throttle = -e.Value });
             }
 
-            if (e.Key == _options.Value.GamepadRotationAxisKey)
+            if (e.Key == _options.Value.GamepadKeyYaw)
             {
-                _messageBroker.PublishAsync(new RemoteControlMessage { Yaw = e.Value });
+                _log.LogDebug($"Yaw: {e.Value:0.00}");
+                _messageBroker.Publish(new RemoteControlMessage { Yaw = -e.Value });
             }
         }
     }
