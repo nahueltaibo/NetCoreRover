@@ -28,6 +28,7 @@ namespace Robot.Controllers.RemoteControl
             _log.LogInformation($"Starting {nameof(RemoteControlController)}");
 
             _gamepadDriver.KeyChanged += OnGamepadKeyChanged;
+
             await Task.CompletedTask;
         }
 
