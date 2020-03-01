@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mqtt;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,18 +24,18 @@ namespace MessageBus
 
             _mqttClient.MessageStream.Subscribe(OnMessageReceived);
 
-            var sessionState = _mqttClient.ConnectAsync().Result;
+            _log.LogDebug($"Connecting to mqtt server...");
 
+            var sessionState = _mqttClient.ConnectAsync().Result;
         }
 
         public async Task PublishAsync<T>(T message) where T : IMessage
         {
             var topic = GetTopic(typeof(T));
 
-
             var serializedMessage = JsonConvert.SerializeObject(message);
 
-            _log.LogDebug($"Publishing topic={topic} payload={serializedMessage}");
+            _log.LogDebug($"Publishing on ({topic}): {serializedMessage}");
 
             var wrapper = new MessageWrapper
             {
@@ -46,6 +45,12 @@ namespace MessageBus
 
             var payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(wrapper));
 
+            if (!_mqttClient.IsConnected)
+            {
+                var ex = new Exception($"Mqtt client is not connected!");
+                _log.LogError(ex.Message, ex);
+                throw ex;
+            }
             await _mqttClient.PublishAsync(new MqttApplicationMessage(topic, payload), MqttQualityOfService.ExactlyOnce);
         }
 
@@ -68,17 +73,31 @@ namespace MessageBus
         {
             var payload = Encoding.UTF8.GetString(mqttMessage.Payload);
 
-            _log.LogDebug($"Message received: topic= {mqttMessage.Topic} payload= {payload}");
-
-            var subscription = Subscriptions.FirstOrDefault(s => s.Topic == mqttMessage.Topic);
-
-            if (subscription != null)
+            try
             {
                 var messageWrapper = (MessageWrapper)JsonConvert.DeserializeObject(payload, typeof(MessageWrapper));
 
-                var message = (IMessage)JsonConvert.DeserializeObject(messageWrapper.Payload, subscription.Type);
+                _log.LogDebug($"Received from ({mqttMessage.Topic}): {messageWrapper.Payload}");
 
-                subscription.Callback(message);
+                var subscription = Subscriptions.FirstOrDefault(s => s.Topic == mqttMessage.Topic);
+
+                if (subscription != null)
+                {
+                    var message = (IMessage)JsonConvert.DeserializeObject(messageWrapper.Payload, subscription.Type);
+
+                    try
+                    {
+                        subscription.Callback(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.LogError($"Exception unhandled by Message callback.", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.LogError($"Error on message received on ({mqttMessage.Topic}): {payload}", ex);
             }
         }
 

@@ -83,7 +83,7 @@ namespace Robot.Reactive
                             stopWatch.Restart();
 
                             // Run whatever we need...
-                            if (_changed == true)
+                            if (_changed)
                             {
                                 _messageBroker.PublishAsync(new VelocityMessage
                                 {

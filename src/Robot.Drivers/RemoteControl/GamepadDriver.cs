@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Gamepad;
+using Microsoft.Extensions.Logging;
+using Robot.Utils;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Gamepad;
-using Microsoft.Extensions.Logging;
-using Robot.Utils;
 
 namespace Robot.Drivers.RemoteControl
 {
@@ -34,9 +34,22 @@ namespace Robot.Drivers.RemoteControl
 
                     if (RemoteControlConnected() && !_remoteControlInitialized)
                     {
-                        _log.LogInformation($"Gamepad detected, connecting to it...");
+                        _log.LogDebug($"Gamepad detected, connecting to it...");
 
                         InitializeRemoteControl();
+
+                        _remoteControlInitialized = true;
+
+                        _log.LogWarning($"Gamepad connected.");
+                    }
+                    else if (!RemoteControlConnected() && _remoteControlInitialized)
+                    {
+                        _log.LogWarning($"Gamepad disconected.");
+
+                        // If the gamepad file doens't exist any more, clear the initialized flag,
+                        // So when gamepad becomes available again we reconnect to it
+                        _remoteControlInitialized = false;
+                        _gamepad = null;
                     }
 
                     Thread.Sleep(1000);
@@ -67,7 +80,7 @@ namespace Robot.Drivers.RemoteControl
 
         private void Gamepad_AxisChanged(object sender, AxisEventArgs e)
         {
-            KeyChanged.Invoke(this, new GamepadEventArgs
+            KeyChanged?.Invoke(this, new GamepadEventArgs
             {
                 Key = e.Axis,
                 Value = ValueMapper.Map(e.Value, -32767, 32767, -1, 1)
@@ -76,7 +89,7 @@ namespace Robot.Drivers.RemoteControl
 
         private void Gamepad_ButtonChanged(object sender, ButtonEventArgs e)
         {
-            KeyChanged.Invoke(this, new GamepadEventArgs
+            KeyChanged?.Invoke(this, new GamepadEventArgs
             {
                 Key = e.Button,
                 Value = e.Pressed ? 1 : 0
