@@ -4,12 +4,12 @@ namespace Robot.Controllers.RemoteControl
 {
     public class RemoteControlOptions
     {
-        public int GamepadTranslationAxisKey { get; set; }
+        public int GamepadKeyThrottle { get; set; }
 
-        public int GamepadRotationAxisKey { get; set; }
+        public int GamepadKeyYaw { get; set; }
 
-        public int KeyboardTranslationAxisKey { get; set; }
+        public int KeyboardKeyThrottle { get; set; }
 
-        public int KeyboardRotationAxisKey { get; set; }
+        public int KeyboardKeyYaw { get; set; }
     }
 }

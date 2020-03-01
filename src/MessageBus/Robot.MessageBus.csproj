@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.2-dev-10269" />
-    <PackageReference Include="System.Net.Mqtt" Version="0.6.0-beta" />
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="M2Mqtt">
+      <HintPath>..\..\lib\m2mqtt\netstandard2.0\M2Mqtt.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll</HintPath>
     </Reference>

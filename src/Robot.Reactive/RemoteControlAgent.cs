@@ -50,7 +50,9 @@ namespace Robot.Reactive
 
             _ = Task.Factory.StartNew(() => Run(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
 
-            await _messageBroker.SubscribeAsync<RemoteControlMessage>(OnRemoteControlMessageReceived);
+            _messageBroker.Subscribe<RemoteControlMessage>(OnRemoteControlMessageReceived);
+
+            await Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -85,7 +87,7 @@ namespace Robot.Reactive
                             // Run whatever we need...
                             if (_changed)
                             {
-                                _messageBroker.PublishAsync(new VelocityMessage
+                                _messageBroker.Publish(new VelocityMessage
                                 {
                                     X = _currentTranslation,
                                     Y = _currentRotation,

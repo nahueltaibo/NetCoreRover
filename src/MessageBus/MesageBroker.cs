@@ -4,15 +4,16 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mqtt;
 using System.Text;
 using System.Threading.Tasks;
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace MessageBus
 {
     public class MesageBroker : IMessageBroker
     {
-        private readonly IMqttClient _mqttClient;
+        private readonly MqttClient _mqttClient;
         private readonly IList<Subscription> Subscriptions = new List<Subscription>();
         private readonly ILogger<IMessageBroker> _log;
 
@@ -20,22 +21,23 @@ namespace MessageBus
         {
             _log = logger;
 
-            _mqttClient = MqttClient.CreateAsync("localhost").Result;
-
-            _mqttClient.MessageStream.Subscribe(OnMessageReceived);
+            _mqttClient = new MqttClient("localhost");
 
             _log.LogDebug($"Connecting to mqtt server...");
 
-            var sessionState = _mqttClient.ConnectAsync().Result;
+            // register to message received
+            _mqttClient.MqttMsgPublishReceived += OnMessageReceived;
+
+            var sessionState = _mqttClient.Connect(Guid.NewGuid().ToString());
         }
 
-        public async Task PublishAsync<T>(T message) where T : IMessage
+        public void Publish<T>(T message) where T : IMessage
         {
             var topic = GetTopic(typeof(T));
 
             var serializedMessage = JsonConvert.SerializeObject(message);
 
-            _log.LogDebug($"Publishing on ({topic}): {serializedMessage}");
+            _log.LogTrace($"Publishing on ({topic}): {serializedMessage}");
 
             var wrapper = new MessageWrapper
             {
@@ -51,10 +53,11 @@ namespace MessageBus
                 _log.LogError(ex.Message, ex);
                 throw ex;
             }
-            await _mqttClient.PublishAsync(new MqttApplicationMessage(topic, payload), MqttQualityOfService.ExactlyOnce);
+
+            _mqttClient.Publish(topic, payload, MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
         }
 
-        public async Task SubscribeAsync<T>(Action<IMessage> callback) where T : IMessage
+        public void Subscribe<T>(Action<IMessage> callback) where T : IMessage
         {
             var topic = GetTopic(typeof(T));
 
@@ -66,20 +69,21 @@ namespace MessageBus
                 Callback = callback,
                 Type = typeof(T)
             });
-            await _mqttClient.SubscribeAsync(topic, MqttQualityOfService.ExactlyOnce);
+
+            _mqttClient.Subscribe(new[] { topic }, new[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
         }
 
-        private void OnMessageReceived(MqttApplicationMessage mqttMessage)
+        private void OnMessageReceived(object sender, MqttMsgPublishEventArgs events)
         {
-            var payload = Encoding.UTF8.GetString(mqttMessage.Payload);
+            var payload = Encoding.UTF8.GetString(events.Message);
 
             try
             {
                 var messageWrapper = (MessageWrapper)JsonConvert.DeserializeObject(payload, typeof(MessageWrapper));
 
-                _log.LogDebug($"Received from ({mqttMessage.Topic}): {messageWrapper.Payload}");
+                _log.LogTrace($"Received from ({events.Topic}): {messageWrapper.Payload}");
 
-                var subscription = Subscriptions.FirstOrDefault(s => s.Topic == mqttMessage.Topic);
+                var subscription = Subscriptions.FirstOrDefault(s => s.Topic == events.Topic);
 
                 if (subscription != null)
                 {
@@ -97,7 +101,7 @@ namespace MessageBus
             }
             catch (Exception ex)
             {
-                _log.LogError($"Error on message received on ({mqttMessage.Topic}): {payload}", ex);
+                _log.LogError($"Error on message received on ({events.Topic}): {payload}", ex);
             }
         }
 

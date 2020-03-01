@@ -2,7 +2,7 @@
 
 namespace Robot.Drivers.RemoteControl
 {
-    public interface IGamepadDriver
+    public interface IGamepadDriver : IDisposable
     {
         event EventHandler<GamepadEventArgs> KeyChanged;
     }
