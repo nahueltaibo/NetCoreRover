@@ -90,7 +90,7 @@ namespace Robot.Reactive
                                 _messageBroker.Publish(new VelocityMessage
                                 {
                                     X = _currentTranslation,
-                                    Y = _currentRotation,
+                                    Y = _currentRotation / 2,
                                     Z = 0
                                 });
 

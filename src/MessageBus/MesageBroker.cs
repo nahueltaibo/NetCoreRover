@@ -54,7 +54,7 @@ namespace MessageBus
                 throw ex;
             }
 
-            _mqttClient.Publish(topic, payload, MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            _mqttClient.Publish(topic, payload, MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
         }
 
         public void Subscribe<T>(Action<IMessage> callback) where T : IMessage
