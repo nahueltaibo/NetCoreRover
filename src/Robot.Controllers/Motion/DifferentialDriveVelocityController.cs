@@ -32,6 +32,8 @@ namespace Robot.Controllers
 
             // Subscribe to SpeedMessages...
             _messageBroker.Subscribe<VelocityMessage>(OnVelocityMessageReceived);
+
+            await Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
