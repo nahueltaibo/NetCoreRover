@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.Start", "Robot.Start\Robot.Start.csproj", "{6F26D7FF-6395-42D4-87FE-617A37D59897}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.MessageBus", "MessageBus\Robot.MessageBus.csproj", "{EDDA41AB-A4D3-4F36-B9B0-818309CAEED6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robot.MessageBus", "Robot.MessageBus\Robot.MessageBus.csproj", "{EDDA41AB-A4D3-4F36-B9B0-818309CAEED6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{FCA06C07-D9A6-44C5-8201-896676E417A5}"
 EndProject

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MessageBus\Robot.MessageBus.csproj" />
+    <ProjectReference Include="..\Robot.MessageBus\Robot.MessageBus.csproj" />
     <ProjectReference Include="..\Robot.Controllers\Robot.Controllers.csproj" />
     <ProjectReference Include="..\Robot.Drivers\Robot.Drivers.csproj" />
     <ProjectReference Include="..\Robot.Reactive\Robot.Reactive.csproj" />
@@ -29,9 +29,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="$(SolutionDir)..\scripts\publishDevPackages.bat" />
-  </Target>
   
 </Project>
