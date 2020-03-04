@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MessageBus
+namespace Robot.MessageBus
 {
     internal class Subscription
     {

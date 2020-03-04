@@ -30,4 +30,8 @@
     </None>
   </ItemGroup>
   
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="$(SolutionDir)..\scripts\publishDevPackages.bat" />
+  </Target>
+  
 </Project>

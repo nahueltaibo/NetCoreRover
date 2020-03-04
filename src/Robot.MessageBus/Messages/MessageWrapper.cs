@@ -1,4 +1,4 @@
-﻿namespace MessageBus.Messages
+﻿namespace Robot.MessageBus.Messages
 {
     internal class MessageWrapper
     {

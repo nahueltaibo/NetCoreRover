@@ -1,4 +1,4 @@
-﻿using MessageBus;
+﻿using Robot.MessageBus;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Robot.MessageBus.Messages;

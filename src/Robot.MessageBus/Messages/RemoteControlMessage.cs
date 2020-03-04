@@ -1,9 +1,7 @@
-﻿using MessageBus;
-
-namespace Robot.MessageBus.Messages
+﻿namespace Robot.MessageBus.Messages
 {
     [Topic("command/remotecontrol")]
-    public class RemoteControlMessage : MessageBase, IMessage
+    public class RemoteControlMessage : IMessage
     {
         /// <summary>
         /// To increase, push the left stick forwards. To decrease, pull the left stick backwards. This adjusts the altitude, or height, of the robot.

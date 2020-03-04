@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MessageBus
+namespace Robot.MessageBus
 {
 
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
