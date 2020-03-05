@@ -1,5 +1,6 @@
 ﻿using Gamepad;
 using Microsoft.Extensions.Logging;
+using Robot.Model.RemoteControl;
 using Robot.Utils;
 using System;
 using System.IO;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Robot.Drivers.RemoteControl
 {
-    public class GamepadDriver : IGamepadDriver
+    public class GamepadDriver : IRemoteControlDriver
     {
         private const string gamepadFile = "/dev/input/js0";
         private readonly ILogger<GamepadDriver> _log;
@@ -65,7 +66,7 @@ namespace Robot.Drivers.RemoteControl
             }
         }
 
-        public event EventHandler<GamepadEventArgs> KeyChanged;
+        public event EventHandler<RemoteControlEventArgs> KeyChanged;
 
         private void InitializeRemoteControl()
         {
@@ -80,20 +81,66 @@ namespace Robot.Drivers.RemoteControl
 
         private void Gamepad_AxisChanged(object sender, AxisEventArgs e)
         {
-            KeyChanged?.Invoke(this, new GamepadEventArgs
+            var rcKey = MapToRemoteControlKey(e.Axis, true);
+
+            if (rcKey != RemoteControlKey.Invalid)
             {
-                Key = e.Axis,
-                Value = ValueMapper.Map(e.Value, -32767, 32767, -1, 1)
-            });
+                var value = ValueMapper.Map(e.Value, -32767, 32767, -1, 1) * ((rcKey == RemoteControlKey.Throttle || rcKey == RemoteControlKey.Yaw) ? -1 : 1);
+
+                KeyChanged?.Invoke(this, new RemoteControlEventArgs
+                {
+                    Key = rcKey,
+                    // Gamepad's Throttle and Yaw values are inverted.. fix that before sending
+                    Value = value
+                });
+            }
         }
 
         private void Gamepad_ButtonChanged(object sender, ButtonEventArgs e)
         {
-            KeyChanged?.Invoke(this, new GamepadEventArgs
+            var rcKey = MapToRemoteControlKey(e.Button, false);
+            if (rcKey != RemoteControlKey.Invalid)
             {
-                Key = e.Button,
-                Value = e.Pressed ? 1 : 0
-            });
+                KeyChanged?.Invoke(this, new RemoteControlEventArgs
+                {
+                    Key = rcKey,
+                    Value = e.Pressed ? 1 : 0
+                });
+            }
+        }
+
+        private RemoteControlKey MapToRemoteControlKey(int code, bool isAxis)
+        {
+            if (isAxis)
+            {
+                // Handle Axis
+                switch (code)
+                {
+                    case 0: return RemoteControlKey.Yaw;
+                    case 1: return RemoteControlKey.Throttle;
+                    case 2: return RemoteControlKey.Roll;
+                    case 3: return RemoteControlKey.Pitch;
+                }
+            }
+            else
+            {
+                // Handle buttons
+                switch (code)
+                {
+                    case 0: return RemoteControlKey.A;
+                    case 1: return RemoteControlKey.B;
+                    case 3: return RemoteControlKey.X;
+                    case 4: return RemoteControlKey.Y;
+                    case 6: return RemoteControlKey.L1;
+                    case 7: return RemoteControlKey.R1;
+                    case 8: return RemoteControlKey.L2;
+                    case 9: return RemoteControlKey.R2;
+                    case 10: return RemoteControlKey.Select;
+                    case 11: return RemoteControlKey.Start;
+                }
+            }
+
+            return RemoteControlKey.Invalid;
         }
 
         private bool RemoteControlConnected()

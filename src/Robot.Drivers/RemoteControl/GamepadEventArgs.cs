@@ -1,11 +1,13 @@
-﻿namespace Robot.Drivers.RemoteControl
+﻿using Robot.Model.RemoteControl;
+
+namespace Robot.Drivers.RemoteControl
 {
-    public class GamepadEventArgs
+    public class RemoteControlEventArgs
     {
         /// <summary>
         /// The Key that changed
         /// </summary>
-        public int Key { get; set; }
+        public RemoteControlKey Key { get; set; }
 
         /// <summary>
         /// The new value of the key

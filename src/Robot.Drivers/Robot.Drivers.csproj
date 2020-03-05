@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Robot.Model\Robot.Model.csproj" />
     <ProjectReference Include="..\Robot.Utils\Robot.Utils.csproj" />
   </ItemGroup>
 

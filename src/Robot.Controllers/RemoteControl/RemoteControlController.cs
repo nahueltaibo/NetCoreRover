@@ -1,8 +1,9 @@
-﻿using Robot.MessageBus;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Robot.Drivers.RemoteControl;
+using Robot.MessageBus;
 using Robot.MessageBus.Messages;
+using Robot.Model.RemoteControl;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,12 +11,12 @@ namespace Robot.Controllers.RemoteControl
 {
     public class RemoteControlController : IRemoteControlController
     {
-        private readonly IGamepadDriver _gamepadDriver;
+        private readonly IRemoteControlDriver _gamepadDriver;
         private readonly IMessageBroker _messageBroker;
         private readonly IOptions<RemoteControlOptions> _options;
         private readonly ILogger<RemoteControlController> _log;
 
-        public RemoteControlController(IGamepadDriver gamepadDriver, IMessageBroker messageBroker, IOptions<RemoteControlOptions> options, ILogger<RemoteControlController> logger)
+        public RemoteControlController(IRemoteControlDriver gamepadDriver, IMessageBroker messageBroker, IOptions<RemoteControlOptions> options, ILogger<RemoteControlController> logger)
         {
             _gamepadDriver = gamepadDriver;
             _messageBroker = messageBroker;
@@ -41,19 +42,15 @@ namespace Robot.Controllers.RemoteControl
             await Task.CompletedTask;
         }
 
-        private void OnGamepadKeyChanged(object sender, GamepadEventArgs e)
+        private void OnGamepadKeyChanged(object sender, RemoteControlEventArgs e)
         {
-            if (e.Key == _options.Value.GamepadKeyThrottle)
+            if (e.Key != RemoteControlKey.Invalid)
             {
-                _log.LogDebug($"Throttle: {e.Value:0.00}");
-                // Gamepad's throttle value comes inverted.. fix that sending (-e.Value)
-                _messageBroker.Publish(new RemoteControlMessage { Throttle = -e.Value });
-            }
-
-            if (e.Key == _options.Value.GamepadKeyYaw)
-            {
-                _log.LogDebug($"Yaw: {e.Value:0.00}");
-                _messageBroker.Publish(new RemoteControlMessage { Yaw = -e.Value });
+                _messageBroker.Publish(new RemoteControlMessage
+                {
+                    Key = (int)e.Key,
+                    Value = e.Value
+                });
             }
         }
     }

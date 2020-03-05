@@ -1,7 +1,8 @@
-﻿using Robot.MessageBus;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Robot.MessageBus;
 using Robot.MessageBus.Messages;
+using Robot.Model.RemoteControl;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -32,12 +33,16 @@ namespace Robot.Reactive
 
         private void OnRemoteControlMessageReceived(IMessage message)
         {
-            var directionMessage = message as RemoteControlMessage;
+            var rcMessage = message as RemoteControlMessage;
 
-            if (directionMessage.Throttle.HasValue || directionMessage.Yaw.HasValue)
+            if (rcMessage.Key == (int)RemoteControlKey.Throttle)
             {
-                _currentTranslation = directionMessage.Throttle ?? _currentTranslation;
-                _currentRotation = directionMessage.Yaw ?? _currentRotation;
+                _currentTranslation = rcMessage.Value;
+                _changed = true;
+            }
+            else if (rcMessage.Key == (int)RemoteControlKey.Yaw)
+            {
+                _currentRotation = rcMessage.Value;
                 _changed = true;
             }
         }

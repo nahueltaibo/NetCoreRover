@@ -56,6 +56,17 @@ dotnet nuget push "Robot.Controllers\bin\Debug\%PackageName%" --source "github"
 REM Remove the local package
 del /Q ".\Robot.Controllers\bin\debug\*.nupkg"
 
+echo **************************************
+echo          Robot.Model
+set PackageName=Robot.Model.1.0.0-%PackageVersionSuffix%.nupkg
+echo Packing and Publishing %PackageName%...
+REM Pack the project..
+dotnet pack .\Robot.Model\Robot.Model.csproj --force --no-build --version-suffix %PackageVersionSuffix%
+REM Publish to Github...
+dotnet nuget push "Robot.Model\bin\Debug\%PackageName%" --source "github"
+REM Remove the local package
+del /Q ".\Robot.Model\bin\debug\*.nupkg"
+
 POPD
 echo *****DONE Building DEV Packages*****
 echo.
