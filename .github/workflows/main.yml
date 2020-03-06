@@ -1,21 +1,24 @@
-name: prerelease NuGet
+name: Build, Pack & Publish DEVELOP nuget prerelease packages
 
-on: [push]
+on:
+  push:
+    branches: 
+      - debug
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
-    # also works with windows-latest and macos-latest
+    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v1
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 2.2.105
     - name: Build with dotnet
-      run: dotnet build "./src/NetCoreRover.sln" --configuration Release --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
-      shell: bash
+      run: dotnet build "./src/NetCoreRover.sln" --configuration Debug
+    - name: Setup nuget config
+      run: sed 's/GITHUB_TOKEN/${{secrets.GithubPackagePublisher }}/g' ./src/nuget.config > ./src/nuget.config
     - name: Publish nuget
-      run: |
-           for f in ./[repository]/bin/Release/*.nupkg
-           do
-             curl -vX PUT -u "[user]:${{ secrets.GithubPackagePublisher }}" -F package=@$f https://nuget.pkg.github.com/nahueltaibo/
-           done
-      shell: bash
+      run: dotnet nuget push src/Robot.MessageBus/bin/Debug/*.nupkg -s "github"
