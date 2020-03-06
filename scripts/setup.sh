@@ -31,12 +31,12 @@ function goto
 
 echo "${green}**** NetCoreRover Environment Installer ****${reset}"
 
-update:
+: update:
 echo
 echo "${green}Updating Raspberry Pi...${reset}"
 sudo apt-get update
 
-upgrade:
+: upgrade:
 echo
 echo "${green}Upgrading Raspberry Pi...${reset}"
 sudo apt-get upgrade -y
@@ -45,7 +45,7 @@ echo
 echo "${green}Upgrading Raspberry Pi distro...${reset}"
 sudo apt-get dist-upgrade -y
 
-dotnet:
+: dotnet:
 echo
 echo "${green}Installing required dependencies...${reset}"
 sudo apt-get install curl libunwind8 gettext
@@ -101,7 +101,7 @@ else
     goto end
 fi
 
-mosquitto:
+: mosquitto:
 echo
 echo "${green}Installing mosquitto${reset}"
 sudo apt install mosquitto mosquitto-clients
@@ -119,4 +119,4 @@ fi
 echo
 echo "${yellow}Remember to enable SSH to publish!${reset}"
 
-end:
+: end:
