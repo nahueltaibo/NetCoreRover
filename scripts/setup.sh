@@ -104,7 +104,7 @@ fi
 : mosquitto:
 echo
 echo "${green}Installing mosquitto${reset}"
-sudo apt install mosquitto mosquitto-clients
+sudo apt install mosquitto mosquitto-clients -y
 sudo systemctl enable mosquitto
 
 if sudo systemctl status mosquitto | grep 'active (running)'; then
