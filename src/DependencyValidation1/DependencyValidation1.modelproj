@@ -26,10 +26,6 @@
     </Validate>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MessageBus\Robot.MessageBus.csproj">
-      <Name>Robot.MessageBus</Name>
-      <Project>{edda41ab-a4d3-4f36-b9b0-818309caeed6}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Robot.Behaviors\Robot.Behaviors.csproj">
       <Name>Robot.Behaviors</Name>
       <Project>{fa9e89f7-7cf8-4b8e-ab3b-cfec71669ed8}</Project>
@@ -42,13 +38,13 @@
       <Name>Robot.Drivers</Name>
       <Project>{e0543400-38e1-46a6-938c-694c1e11724d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Robot.MessageBus\Robot.MessageBus.csproj">
+      <Name>Robot.MessageBus</Name>
+      <Project>{edda41ab-a4d3-4f36-b9b0-818309caeed6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Robot.Reactive\Robot.Reactive.csproj">
       <Name>Robot.Reactive</Name>
       <Project>{6ef98771-79e9-45df-abdd-4a0742fde53f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Rover.Host\Robot.Host.csproj">
-      <Name>Robot.Host</Name>
-      <Project>{6f26d7ff-6395-42d4-87fe-617a37d59897}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\ArchitectureTools\Microsoft.VisualStudio.TeamArchitect.ModelingProject.targets" Condition="'$(VSToolsPath)' != ''" />

@@ -5,8 +5,8 @@
       <childLayers>
         <layer Id="7e1da418-59e3-4db2-9ac6-ffd165f0b0ea" name="Robot.Behaviors">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="c3769ecd-e978-4922-954a-5980958f947a" direction="Forward">
-              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            <dependencyFromLayerToLayer Id="3052a392-a3b2-4b76-b434-f6b9352a3eb2" direction="Forward">
+              <layerMoniker Id="2a14c221-26d2-4f13-9b92-9a3902fcc28c" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
@@ -27,8 +27,8 @@
       <childLayers>
         <layer Id="d1fa9f68-7e53-40b9-a084-b0582c3fc95d" name="Robot.Reactive">
           <dependencyToLayers>
-            <dependencyFromLayerToLayer Id="2ad119b7-b986-4672-9f0a-123fdc54efca" direction="Forward">
-              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            <dependencyFromLayerToLayer Id="fce7a9e9-8593-4ab0-8f2b-9144e60ffff0" direction="Forward">
+              <layerMoniker Id="2a14c221-26d2-4f13-9b92-9a3902fcc28c" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
@@ -65,8 +65,8 @@
             <dependencyFromLayerToLayer Id="b93c4c9c-f8e1-4afd-9767-10dec803326a" direction="Forward">
               <layerMoniker Id="9d847d4e-1b33-445c-9598-7a6fe69045e6" />
             </dependencyFromLayerToLayer>
-            <dependencyFromLayerToLayer Id="aa683fc8-8ad8-4c27-84ce-748e2de454a7" direction="Forward">
-              <layerMoniker Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" />
+            <dependencyFromLayerToLayer Id="c3388f26-0ce5-4cae-ae7f-a8c1f853fa0b" direction="Forward">
+              <layerMoniker Id="2a14c221-26d2-4f13-9b92-9a3902fcc28c" />
             </dependencyFromLayerToLayer>
           </dependencyToLayers>
           <references>
@@ -85,13 +85,14 @@
     </layer>
     <layer Id="65720137-1766-4d70-a12c-5bf5aa7c6bf4" name="Infrastructure">
       <childLayers>
-        <layer Id="179053c1-0c63-49ee-b6a2-5f4b39bf1a27" name="Robot.MessageBus">
+        <layer Id="2a14c221-26d2-4f13-9b92-9a3902fcc28c" name="Robot.MessageBus">
           <references>
-            <reference Id="c4dd43e5-19c2-40b6-8d76-b550a442a498" name="Robot.MessageBus">
-              <ArtifactNode Label="Robot.MessageBus" Category="CodeSchema_Project" Id="(Assembly=../MessageBus/Robot.MessageBus.csproj)">
+            <reference Id="d4210636-91d3-485b-a996-c7b392bc65e6" name="Robot.MessageBus">
+              <ArtifactNode Label="Robot.MessageBus" Category="CodeSchema_Project" Id="(Assembly=../Robot.MessageBus/Robot.MessageBus.csproj)">
                 <Category Ref="File" />
               </ArtifactNode>
               <ExpandedNode Id="(Assembly=Robot.MessageBus)" Label="Robot.MessageBus.dll" Category="CodeSchema_Assembly">
+                <Category Ref="FileSystem.Category.FileOfType.dll" />
                 <LinkCategory Ref="Produces" />
                 <LinkCategory Ref="Represents" />
               </ExpandedNode>
