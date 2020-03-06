@@ -18,6 +18,8 @@ jobs:
         dotnet-version: 2.2.105
     - name: Go to solution
       run: cd src
+    - name: Show folder content
+      run: ls
     - name: Build with dotnet
       run: dotnet build --configuration Debug
     - name: Setup nuget config
