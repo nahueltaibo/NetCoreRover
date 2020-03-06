@@ -16,13 +16,15 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.105
-    - name: Go to solution
-      run: cd src
     - name: Show folder content
+      working-directory: ./src
       run: ls
     - name: Build with dotnet
+      working-directory: ./src
       run: dotnet build --configuration Debug
     - name: Setup nuget config
+      working-directory: ./src
       run: sed 's/GITHUB_TOKEN/${{secrets.GithubPackagePublisher }}/g' ./nuget.config > nuget.config
     - name: Publish nuget
+      working-directory: ./src
       run: dotnet nuget push ./Robot.MessageBus/bin/Debug/*.nupkg -s "github"
