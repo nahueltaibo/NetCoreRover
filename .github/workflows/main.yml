@@ -14,12 +14,14 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.105
-    - name: Setup nuget config
-      working-directory: ./src
-      run: sed 's/GITHUB_TOKEN/${{secrets.GithubPackagePublisher }}/g' ./nuget.config > ./nuget.config
-    - name: Show nuget.config contents
-      working-directory: ./src
-      run: less nuget.config
+    - name: Build with dotnet
+      run: dotnet build --configuration Debug --version-suffix prerelease-$(date +%Y%m%d%H%M%S)
+      shell: bash
     - name: Publish nuget
+      run: |
+           for f in ./Robot.MessageBus/bin/Debug/*.nupkg
+           do
+             curl -vX PUT -u "nahueltaibo:${{ secrets.GITHUB_TOKEN }}" -F package=@$f https://nuget.pkg.github.com/nahueltaibo/
+           done
+      shell: bash
       working-directory: ./src
-      run: dotnet nuget push ./Robot.MessageBus/bin/Debug/*.nupkg -s "github"
