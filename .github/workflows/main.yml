@@ -16,7 +16,7 @@ jobs:
         dotnet-version: 2.2.105
     - name: Setup nuget config
       working-directory: ./src
-      run: sed 's/GITHUB_TOKEN/${{secrets.GithubPackagePublisher }}/g' ./nuget.config > nuget.config
+      run: sed 's/GITHUB_TOKEN/${{secrets.GithubPackagePublisher }}/g' ./nuget.config > ./nuget.config
     - name: Show nuget.config contents
       working-directory: ./src
       run: less nuget.config
