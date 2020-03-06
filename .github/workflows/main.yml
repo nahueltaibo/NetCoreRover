@@ -3,7 +3,7 @@ name: Build, Pack & Publish DEVELOP nuget prerelease packages
 on:
   push:
     branches: 
-      - debug
+      - develop
 
 jobs:
   build:
