@@ -4,7 +4,7 @@ cls
 set PackagesPath=c:\Dev\Packages
 
 for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /format:list') do set datetime=%%I
-set PackageVersionSuffix=prerelease-%datetime:~2,2%%datetime:~4,2%%datetime:~6,2%%datetime:~8,2%%datetime:~10,2%%datetime:~12,2%
+set PackageVersionSuffix=prerelease.%datetime:~2,2%%datetime:~4,2%%datetime:~6,2%%datetime:~8,2%%datetime:~10,2%%datetime:~12,2%
 
 PUSHD ..\src\
 	set Name=Robot.MessageBus
