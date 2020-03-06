@@ -1,7 +1,6 @@
 ﻿using Robot.MessageBus;
 using Microsoft.Extensions.Logging;
 using Robot.Drivers.Motors;
-using Robot.MessageBus;
 using Robot.MessageBus.Messages;
 using Robot.Utils;
 using System;
