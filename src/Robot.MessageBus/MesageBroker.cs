@@ -10,7 +10,7 @@ using Robot.MessageBus.Messages;
 
 namespace Robot.MessageBus
 {
-    public class MesageBroker : IMessageBroker 
+    public class MesageBroker : IMessageBroker
     {
         private readonly MqttClient _mqttClient;
         private readonly IList<Subscription> Subscriptions = new List<Subscription>();
