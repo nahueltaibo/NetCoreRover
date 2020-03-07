@@ -1,6 +1,8 @@
-﻿namespace Robot.MessageBus.Messages
+﻿using Robot.Utils;
+
+namespace Robot.MessageBus.Messages
 {
-    [Topic("command/remotecontrol")]
+    [Topic(Topics.Command.RemoteControl)]
     public class RemoteControlMessage : IMessage
     {
         public int Key { get; set; }

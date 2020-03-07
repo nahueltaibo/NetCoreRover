@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Robot.Utils\Robot.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="M2Mqtt">
       <HintPath>..\..\lib\m2mqtt\netstandard2.0\M2Mqtt.dll</HintPath>
     </Reference>
