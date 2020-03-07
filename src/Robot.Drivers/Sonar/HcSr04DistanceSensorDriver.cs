@@ -9,13 +9,13 @@ namespace Robot.Drivers.Sonar
 {
     public class HcSr04DistanceSensorDriver : IDistanceSensor
     {
-        private Hcsr04 Sensor;
+        private readonly Hcsr04 Sensor;
 
         public int Id { get; }
         public double Angle { get; }
-        public CancellationTokenSource MeasuringCancellationToken { get; private set; }
-        public HcSr04DistanceSensorDriverSettings Settings { get; }
-        public ILogger<HcSr04DistanceSensorDriver> Logger { get; }
+        private CancellationTokenSource MeasuringCancellationToken { get; set; }
+        private HcSr04DistanceSensorDriverSettings Settings { get; }
+        private ILogger<HcSr04DistanceSensorDriver> Logger { get; }
 
         public event EventHandler<SonarDistanceEventArgs> SonarDistanceChanged;
 

@@ -12,9 +12,9 @@ namespace Robot.Controllers.Sensor
 {
     public class DistanceSensorController : IHostedService, IDistanceSensorController
     {
-        public IDistanceSensor[] Sensors { get; }
-        public IMessageBroker MessageBroker { get; }
-        public ILogger<DistanceSensorController> Logger { get; }
+        private IDistanceSensor[] Sensors { get; }
+        private IMessageBroker MessageBroker { get; }
+        private ILogger<DistanceSensorController> Logger { get; }
 
         public DistanceSensorController(IEnumerable<IDistanceSensor> sensors, IMessageBroker messageBroker, ILogger<DistanceSensorController> logger)
         {
