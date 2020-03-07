@@ -8,6 +8,12 @@ using Robot.Controllers.RemoteControl;
 using Robot.Drivers.Motors;
 using Robot.Drivers.RemoteControl;
 using Robot.Reactive;
+using Robot.Controllers.Sensor;
+using Microsoft.Extensions.Hosting;
+using Robot.Drivers.Sonar;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace Robot.Host
 {
@@ -34,7 +40,7 @@ namespace Robot.Host
             return services;
         }
 
-        public static IServiceCollection AddControlLayer(this IServiceCollection services)
+        public static IServiceCollection AddControlLayer(this IServiceCollection services, HostBuilderContext hostContext)
         {
             // Configure the Differencial Drive Controller
             services.AddHostedService<DifferentialDriveVelocityController>(s =>
@@ -68,6 +74,18 @@ namespace Robot.Host
                     s.GetService<IMessageBroker>(),
                     s.GetService<IOptions<RemoteControlOptions>>(),
                     s.GetService<ILogger<RemoteControlController>>());
+            });
+
+            // Configure the Distance Controller
+            services.AddHostedService<DistanceSensorController>(s =>
+            {
+                var configs = hostContext.Configuration.GetSection("sensors:sonars");
+                var mappedConfigs = configs.Get<IEnumerable<HcSr04DistanceSensorDriverSettings>>();
+                var sensors = mappedConfigs.Select(x => new HcSr04DistanceSensorDriver(x, s.GetService<ILogger<HcSr04DistanceSensorDriver>>())).ToArray();
+
+                return new DistanceSensorController(sensors,
+                    s.GetService<IMessageBroker>(),
+                    s.GetService<ILogger<DistanceSensorController>>());
             });
 
             return services;
