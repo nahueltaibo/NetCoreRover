@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Robot.MessageBus.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
-using Robot.MessageBus.Messages;
 
 namespace Robot.MessageBus
 {
