@@ -1,21 +1,21 @@
-﻿using Iot.Device.MotorHat;
-using Robot.MessageBus;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Iot.Device.MotorHat;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Robot.Controllers;
+using Robot.Controllers.Motion;
 using Robot.Controllers.RemoteControl;
+using Robot.Controllers.Sensor;
 using Robot.Drivers.Motors;
 using Robot.Drivers.RemoteControl;
-using Robot.Reactive;
-using Robot.Controllers.Sensor;
-using Microsoft.Extensions.Hosting;
 using Robot.Drivers.Sonar;
-using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-using System.Linq;
+using Robot.MessageBus;
+using Robot.Reactive;
 
-namespace Robot.Host
+namespace Robot.Start
 {
     public static class DependecyInjection
     {
@@ -29,7 +29,6 @@ namespace Robot.Host
 
         public static IServiceCollection AddBehavioralLayer(this IServiceCollection services)
         {
-
             return services;
         }
 
@@ -43,7 +42,7 @@ namespace Robot.Host
         public static IServiceCollection AddControlLayer(this IServiceCollection services, HostBuilderContext hostContext)
         {
             // Configure the Differencial Drive Controller
-            services.AddHostedService<DifferentialDriveVelocityController>(s =>
+            services.AddHostedService(s =>
             {
                 // Create the motor Hat, and the drivers for left and right motors
                 var motorHat = new MotorHat();
@@ -65,7 +64,7 @@ namespace Robot.Host
             });
 
             // Configure the Remote Control Controller
-            services.AddHostedService<RemoteControlController>(s =>
+            services.AddHostedService(s =>
             {
                 var gamepadDriver = new GamepadDriver(s.GetService<ILogger<GamepadDriver>>());
 
@@ -77,7 +76,7 @@ namespace Robot.Host
             });
 
             // Configure the Distance Controller
-            services.AddHostedService<DistanceSensorController>(s =>
+            services.AddHostedService(s =>
             {
                 var configs = hostContext.Configuration.GetSection("sensors:sonars");
                 var mappedConfigs = configs.Get<IEnumerable<HcSr04DistanceSensorDriverSettings>>();
@@ -86,6 +85,25 @@ namespace Robot.Host
                 return new DistanceSensorController(sensors,
                     s.GetService<IMessageBroker>(),
                     s.GetService<ILogger<DistanceSensorController>>());
+            });
+            
+            // Configure ObstacleAvoidingController
+            services.AddScoped(provider =>
+            {
+                var config = hostContext.Configuration.GetSection("motion:obstacleAvoiding:calculator");
+                var mappedConfig = config.Get<ObstacleAvoidanceCalculatorSettings>();
+                return new ObstacleAvoidanceCalculator(mappedConfig);
+            });
+            services.AddHostedService(s =>
+            {
+                var config = hostContext.Configuration.GetSection("motion:obstacleAvoiding:controller");
+                var mappedConfig = config.Get<ObstacleAvoidanceControllerSettings>();
+
+                return new ObstacleAvoidanceController(s.GetService<IMessageBroker>(),
+                    s.GetService<ILogger<ObstacleAvoidanceController>>(),
+                    s.GetService<ObstacleAvoidanceCalculator>(),
+                    mappedConfig
+                );
             });
 
             return services;

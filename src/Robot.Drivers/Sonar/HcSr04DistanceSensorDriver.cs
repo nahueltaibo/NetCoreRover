@@ -31,7 +31,7 @@ namespace Robot.Drivers.Sonar
             Logger = logger;
         }
 
-        private async void MeasurementCycle()
+        private async Task MeasurementCycle()
         {
             var token = MeasuringCancellationToken.Token;
             while (!token.IsCancellationRequested)

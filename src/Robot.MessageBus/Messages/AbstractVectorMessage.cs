@@ -2,8 +2,7 @@
 
 namespace Robot.MessageBus.Messages
 {
-    [Topic(Topics.Motion.Velocity)]
-    public class VelocityMessage : IMessage
+    public abstract class AbstractVectorMessage : IMessage
     {
         public double? X { get; set; }
         public double? Y { get; set; }

@@ -92,7 +92,7 @@ namespace Robot.Reactive
                             // Run whatever we need...
                             if (_changed)
                             {
-                                _messageBroker.Publish(new VelocityMessage
+                                _messageBroker.Publish(new RequestedVelocityMessage
                                 {
                                     X = _currentTranslation,
                                     Y = _currentRotation / 2,
