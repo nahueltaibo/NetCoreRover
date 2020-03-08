@@ -9,7 +9,8 @@ namespace Robot.Drivers.Sonar
 {
     public class HcSr04DistanceSensorDriver : IDistanceSensor
     {
-        private readonly Hcsr04 Sensor;
+        private readonly Hcsr04 _sensor;
+        private static readonly object SyncRoot = new object();
 
         public int Id { get; }
         public double Angle { get; }
@@ -23,7 +24,7 @@ namespace Robot.Drivers.Sonar
         {
             Id = settings.SensorId;
             Angle = settings.Angle;
-            Sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin, PinNumberingScheme.Logical);
+            _sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin, PinNumberingScheme.Logical);
             MeasuringCancellationToken = new CancellationTokenSource();
             Task.Run(MeasurementCycle);
             Settings = settings;
@@ -40,7 +41,15 @@ namespace Robot.Drivers.Sonar
                 {
                     if (SonarDistanceChanged != null)
                     {
-                        var measurement = Sensor.Distance / 100; // Convert from cm to m
+                        double? measurement = null;
+
+                        // Now we're entering a critical section to avoid sonar interference
+                        // Sound wave from one sonar may affect the another's results
+                        lock (SyncRoot)
+                        {
+                            measurement = _sensor.Distance / 100; // Convert from cm to m
+                        }
+                        
                         SonarDistanceChanged.Invoke(this, new SonarDistanceEventArgs
                         {
                             SonarId = Id,
@@ -71,7 +80,7 @@ namespace Robot.Drivers.Sonar
         {
             if (disposing)
             {
-                Sensor.Dispose();
+                _sensor.Dispose();
                 MeasuringCancellationToken.Cancel();
             }
         }
