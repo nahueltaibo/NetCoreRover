@@ -1,9 +1,8 @@
-﻿using Iot.Device.Hcsr04;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Device.Gpio;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Iot.Device.Hcsr04;
+using Microsoft.Extensions.Logging;
 
 namespace Robot.Drivers.Sonar
 {
@@ -20,11 +19,12 @@ namespace Robot.Drivers.Sonar
 
         public event EventHandler<SonarDistanceEventArgs> SonarDistanceChanged;
 
-        public HcSr04DistanceSensorDriver(HcSr04DistanceSensorDriverSettings settings, ILogger<HcSr04DistanceSensorDriver> logger)
+        public HcSr04DistanceSensorDriver(HcSr04DistanceSensorDriverSettings settings,
+            ILogger<HcSr04DistanceSensorDriver> logger)
         {
             Id = settings.SensorId;
             Angle = settings.Angle;
-            _sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin, PinNumberingScheme.Logical);
+            _sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin);
             MeasuringCancellationToken = new CancellationTokenSource();
             Task.Run(MeasurementCycle);
             Settings = settings;
@@ -36,12 +36,21 @@ namespace Robot.Drivers.Sonar
             var token = MeasuringCancellationToken.Token;
             while (!token.IsCancellationRequested)
             {
-                await Task.Delay(Settings.MeasuringInterval);
+                var interval = Task.Delay(Settings.MeasuringInterval);
+                var measurement = DoMeasurement();
+                await Task.WhenAll(interval, measurement);
+            }
+        }
+
+        private Task DoMeasurement()
+        {
+            return Task.Run(() =>
+            {
                 try
                 {
                     if (SonarDistanceChanged != null)
                     {
-                        double? measurement = null;
+                        double? measurement;
 
                         // Now we're entering a critical section to avoid sonar interference
                         // Sound wave from one sonar may affect the another's results
@@ -49,27 +58,27 @@ namespace Robot.Drivers.Sonar
                         {
                             measurement = _sensor.Distance / 100; // Convert from cm to m
                         }
-                        
+
                         SonarDistanceChanged.Invoke(this, new SonarDistanceEventArgs
                         {
                             SonarId = Id,
                             Angle = Angle,
                             Distance = measurement
                         });
-                    }                    
-                    
+                    }
                 }
                 catch (Exception e)
                 {
                     Logger.LogError(e, "Sonar {0} failed to raise a SonarDistanceChanged event", Id);
                 }
-            }
+            });
         }
 
         ~HcSr04DistanceSensorDriver()
         {
             Dispose(false);
         }
+
         public void Dispose()
         {
             Dispose(true);
@@ -80,6 +89,7 @@ namespace Robot.Drivers.Sonar
         {
             if (disposing)
             {
+                // ReSharper disable once InconsistentlySynchronizedField
                 _sensor.Dispose();
                 MeasuringCancellationToken.Cancel();
             }
