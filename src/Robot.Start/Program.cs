@@ -1,17 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Robot.Host;
-using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
-namespace HostConsole
+namespace Robot.Start
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {

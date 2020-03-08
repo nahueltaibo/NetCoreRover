@@ -7,7 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Robot.Controllers
+namespace Robot.Controllers.Motion
 {
     public class DifferentialDriveVelocityController : IVelocityController
     {
@@ -31,7 +31,7 @@ namespace Robot.Controllers
             _log.LogInformation($"Starting {nameof(DifferentialDriveVelocityController)}");
 
             // Subscribe to SpeedMessages...
-            _messageBroker.Subscribe<VelocityMessage>(OnVelocityMessageReceived);
+            _messageBroker.Subscribe<AppliedVelocityMessage>(OnVelocityMessageReceived);
 
             await Task.CompletedTask;
         }
@@ -44,7 +44,7 @@ namespace Robot.Controllers
 
         private void OnVelocityMessageReceived(IMessage message)
         {
-            var velocityMessage = message as VelocityMessage;
+            var velocityMessage = message as AppliedVelocityMessage;
 
             // Update the direction and rotation only if we are receiving a valid value
             _translation = velocityMessage.X ?? _translation;

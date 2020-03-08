@@ -12,20 +12,20 @@ namespace Robot.Controllers.Sensor
 {
     public class DistanceSensorController : IHostedService, IDistanceSensorController
     {
-        private IDistanceSensor[] Sensors { get; }
-        private IMessageBroker MessageBroker { get; }
-        private ILogger<DistanceSensorController> Logger { get; }
+        private readonly IDistanceSensor[] _sensors;
+        private readonly IMessageBroker _messageBroker;
+        private readonly ILogger<DistanceSensorController> _logger;
 
         public DistanceSensorController(IEnumerable<IDistanceSensor> sensors, IMessageBroker messageBroker, ILogger<DistanceSensorController> logger)
         {
-            Sensors = sensors.ToArray();
-            MessageBroker = messageBroker;
-            Logger = logger;
+            _sensors = sensors.ToArray();
+            _messageBroker = messageBroker;
+            _logger = logger;
         }
 
         private void InitializeSensors()
         {
-            foreach (var sensor in Sensors)
+            foreach (var sensor in _sensors)
             {
                 sensor.SonarDistanceChanged += OnSonarDistanceChanged;
             }
@@ -33,7 +33,7 @@ namespace Robot.Controllers.Sensor
 
         private void OnSonarDistanceChanged(object sender, SonarDistanceEventArgs e)
         {
-            MessageBroker.Publish(new DistanceMessage
+            _messageBroker.Publish(new DistanceMessage
             {
                 SensorId = e.SonarId,
                 SensorAngle = e.Angle,
@@ -43,12 +43,14 @@ namespace Robot.Controllers.Sensor
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Starting service {nameof(DistanceSensorController)}...");
             InitializeSensors();
             await Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Stopping service {nameof(DistanceSensorController)}...");
             await Task.CompletedTask;
         }
     }
