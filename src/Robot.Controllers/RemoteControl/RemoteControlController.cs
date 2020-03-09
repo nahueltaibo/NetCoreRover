@@ -35,9 +35,11 @@ namespace Robot.Controllers.RemoteControl
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            _log.LogInformation($"Stopping {nameof(RemoteControlController)}");
-
             _gamepadDriver.KeyChanged -= OnGamepadKeyChanged;
+
+            _gamepadDriver.Dispose();
+
+            _log.LogInformation($"{nameof(RemoteControlController)} stopped");
 
             await Task.CompletedTask;
         }
