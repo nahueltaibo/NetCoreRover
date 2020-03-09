@@ -26,7 +26,7 @@ namespace Robot.Drivers.Sonar
             Angle = settings.Angle;
             _sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin);
             MeasuringCancellationToken = new CancellationTokenSource();
-            Task.Run(MeasurementCycle);
+            Task.Run(() => MeasurementCycle());
             Settings = settings;
             Logger = logger;
         }
