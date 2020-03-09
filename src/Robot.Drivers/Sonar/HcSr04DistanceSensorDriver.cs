@@ -26,7 +26,7 @@ namespace Robot.Drivers.Sonar
             Angle = settings.Angle;
             _sensor = new Hcsr04(settings.TriggerPin, settings.EchoPin, PinNumberingScheme.Logical);
             MeasuringCancellationToken = new CancellationTokenSource();
-            Task.Run(MeasurementCycle);
+            Task.Run(() => MeasurementCycle());
             Settings = settings;
             Logger = logger;
         }
@@ -49,15 +49,15 @@ namespace Robot.Drivers.Sonar
                         {
                             measurement = _sensor.Distance / 100; // Convert from cm to m
                         }
-                        
+
                         SonarDistanceChanged.Invoke(this, new SonarDistanceEventArgs
                         {
                             SonarId = Id,
                             Angle = Angle,
                             Distance = measurement
                         });
-                    }                    
-                    
+                    }
+
                 }
                 catch (Exception e)
                 {

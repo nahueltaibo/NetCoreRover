@@ -14,7 +14,7 @@ namespace Robot.Drivers.RemoteControl
         private const string gamepadFile = "/dev/input/js0";
         private readonly ILogger<GamepadDriver> _log;
         private readonly Task _connectionTask;
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _detectingGamepad = new CancellationTokenSource();
         private GamepadController _gamepad;
         private bool _remoteControlInitialized;
 
@@ -22,7 +22,7 @@ namespace Robot.Drivers.RemoteControl
         {
             _log = logger;
 
-            _connectionTask = Task.Factory.StartNew(() => HandleGamepadConnection(_cancellationTokenSource.Token), TaskCreationOptions.LongRunning);
+            _connectionTask = Task.Factory.StartNew(() => HandleGamepadConnection(_detectingGamepad.Token), TaskCreationOptions.LongRunning);
         }
 
         private void HandleGamepadConnection(CancellationToken token)
@@ -148,23 +148,39 @@ namespace Robot.Drivers.RemoteControl
             return File.Exists(gamepadFile);
         }
 
+        ~GamepadDriver()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
-            // Cancel the task that checks for a connected gamepad
-            _cancellationTokenSource.Cancel();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            try
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                _connectionTask.Wait();
-            }
-            catch (TaskCanceledException)
-            {
-            }
-            catch (Exception ex)
-            {
-                _log.LogError($"Unexpected exception when cancelling the Gamepad connection Task", ex);
-                throw;
+                // Cancel the task that checks for a connected gamepad
+                _detectingGamepad.Cancel();
+
+                try
+                {
+                    _connectionTask.Wait();
+                }
+                catch (TaskCanceledException)
+                {
+                }
+                catch (Exception ex)
+                {
+                    _log.LogError($"Unexpected exception when cancelling the Gamepad connection Task", ex);
+                    throw;
+                }
+                _log.LogDebug($"{nameof(GamepadDriver)} stopped");
             }
         }
+
     }
 }

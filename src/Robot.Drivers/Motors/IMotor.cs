@@ -1,6 +1,8 @@
-﻿namespace Robot.Drivers.Motors
+﻿using System;
+
+namespace Robot.Drivers.Motors
 {
-    public interface IMotor
+    public interface IMotor : IDisposable
     {
         /// <summary>
         /// Sets the speed of a motor
