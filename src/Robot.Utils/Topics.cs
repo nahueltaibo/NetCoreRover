@@ -18,6 +18,10 @@
             {
                 public const string Distance = "sensor/sonar/distance";
             }
+            public static class Switch
+            {
+                public const string SinglePoleSwitch = "sensor/switch/singlepole";
+            }
         }
     }
 }
