@@ -37,7 +37,7 @@ namespace Robot.Controllers.Sensor
             MessageBroker.Publish(new SwitchSensorMessage
             {
                 SensorId = e.SwitchId,
-                On = e.On
+                IsOn = e.IsOn
             });
         }
 
